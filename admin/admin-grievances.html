@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin - Grievances</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            width: 240px;
+            background: #1e293b;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+
+        .sidebar a:hover {
+            background: #334155;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .top-bar {
+            margin-bottom: 25px;
+        }
+
+        .top-bar h1 {
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .top-bar p {
+            color: #64748b;
+        }
+
+        /* =========================
+           GRIEVANCE CARD
+        ========================= */
+
+        .grievance-card {
+            background: white;
+            padding: 22px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .grievance-card h3 {
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+
+        .grievance-card p {
+            margin-bottom: 8px;
+            color: #475569;
+        }
+
+        .grievance-id {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        /* =========================
+           CONTROLS
+        ========================= */
+
+        .control-section {
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .control-section label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #334155;
+        }
+
+        select {
+            width: 100%;
+            max-width: 350px;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            background: white;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            background: #2563eb;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .status-button {
+            background: #16a34a;
+        }
+
+        .status-button:hover {
+            background: #15803d;
+        }
+
+        .empty-message {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            color: #64748b;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .main {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+
+    <aside class="sidebar">
+
+        <h2>Admin Panel</h2>
+
+        <a href="/admin/admin-dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="/admin/admin-grievances.html">
+            Grievances
+        </a>
+
+        <a href="/admin/admin-login.html"
+           onclick="logout()">
+            Logout
+        </a>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================= -->
+
+    <main class="main">
+
+        <div class="top-bar">
+
+            <h1>Student Grievances</h1>
+
+            <p>
+                View and manage student grievances
+            </p>
+
+        </div>
+
+
+        <div id="grievancesContainer">
+
+            Loading grievances...
+
+        </div>
+
+
+    </main>
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       CHECK ADMIN LOGIN
+    ===================================================== */
+
+    const admin =
+        JSON.parse(
+            localStorage.getItem("admin")
+        );
+
+    if (!admin) {
+
+        window.location.href =
+            "/admin/admin-login.html";
+
+    }
+
+
+    /* =====================================================
+       LOAD GRIEVANCES
+    ===================================================== */
+
+    async function loadGrievances() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://127.0.0.1:5000/admin/grievances"
+                );
+
+            const grievances =
+                await response.json();
+
+
+            const container =
+                document.getElementById(
+                    "grievancesContainer"
+                );
+
+
+            container.innerHTML = "";
+
+
+            if (grievances.length === 0) {
+
+                container.innerHTML = `
+                    <div class="empty-message">
+                        No grievances submitted yet.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            grievances.forEach(
+                function(grievance) {
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+                    card.className =
+                        "grievance-card";
+
+
+                    card.innerHTML = `
+
+                        <h3>
+                            ${grievance.title}
+                        </h3>
+
+                        <p class="grievance-id">
+                            Grievance ID:
+                            ${grievance.grievance_id}
+                        </p>
+
+                        <p>
+                            <strong>Student:</strong>
+                            ${grievance.student_name}
+                        </p>
+
+                        <p>
+                            <strong>Category:</strong>
+                            ${grievance.category}
+                        </p>
+
+                        <p>
+                            <strong>Description:</strong>
+                            ${grievance.description}
+                        </p>
+
+
+                        <!-- =====================
+                             DEPARTMENT
+                        ====================== -->
+
+                        <div class="control-section">
+
+                            <label>
+                                Department
+                            </label>
+
+                            <select
+                                id="department-${grievance.grievance_id}"
+                            >
+
+                                <option value="">
+                                    Select Department
+                                </option>
+
+                                <option value="Academic Department">
+                                    Academic Department
+                                </option>
+
+                                <option value="Hostel Department">
+                                    Hostel Department
+                                </option>
+
+                                <option value="Library Department">
+                                    Library Department
+                                </option>
+
+                                <option value="Examination Department">
+                                    Examination Department
+                                </option>
+
+                                <option value="Scholarship Department">
+                                    Scholarship Department
+                                </option>
+
+                                <option value="Infrastructure Department">
+                                    Infrastructure Department
+                                </option>
+
+                                <option value="General Administration">
+                                    General Administration
+                                </option>
+
+                            </select>
+
+                            <button
+                                onclick="updateDepartment(
+                                    '${grievance.grievance_id}'
+                                )"
+                            >
+                                Update Department
+                            </button>
+
+                        </div>
+
+
+                        <!-- =====================
+                             STATUS
+                        ====================== -->
+
+                        <div class="control-section">
+
+                            <label>
+                                Current Status
+                            </label>
+
+                            <select
+                                id="status-${grievance.grievance_id}"
+                            >
+
+                                <option value="Pending">
+                                    Pending
+                                </option>
+
+                                <option value="In Progress">
+                                    In Progress
+                                </option>
+
+                                <option value="Resolved">
+                                    Resolved
+                                </option>
+
+                            </select>
+
+                            <button
+                                class="status-button"
+                                onclick="updateStatus(
+                                    '${grievance.grievance_id}'
+                                )"
+                            >
+                                Update Status
+                            </button>
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(
+                        card
+                    );
+
+
+                    /* =====================
+                       SET CURRENT STATUS
+                    ====================== */
+
+                    const statusSelect =
+                        document.getElementById(
+                            `status-${grievance.grievance_id}`
+                        );
+
+
+                    statusSelect.value =
+                        grievance.status;
+
+
+                    /* =====================
+                       SET CURRENT DEPARTMENT
+                    ====================== */
+
+                    const departmentSelect =
+                        document.getElementById(
+                            `department-${grievance.grievance_id}`
+                        );
+
+
+                    if (grievance.department) {
+
+                        departmentSelect.value =
+                            grievance.department;
+
+                    }
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Error loading grievances:",
+                error
+            );
+
+            document.getElementById(
+                "grievancesContainer"
+            ).innerHTML = `
+                <div class="empty-message">
+                    Failed to load grievances.
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       UPDATE DEPARTMENT
+    ===================================================== */
+
+    async function updateDepartment(
+        grievanceId
+    ) {
+
+        const departmentSelect =
+            document.getElementById(
+                `department-${grievanceId}`
+            );
+
+
+        const department =
+            departmentSelect.value;
+
+
+        if (!department) {
+
+            alert(
+                "Please select a department."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://127.0.0.1:5000/admin/update-department",
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            grievance_id:
+                                grievanceId,
+
+                            department:
+                                department
+
+                        })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (response.ok) {
+
+                alert(
+                    "Department updated successfully!"
+                );
+
+                loadGrievances();
+
+            } else {
+
+                alert(
+                    data.message ||
+                    "Failed to update department."
+                );
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Error updating department:",
+                error
+            );
+
+            alert(
+                "Server error."
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       UPDATE STATUS
+    ===================================================== */
+
+    async function updateStatus(
+        grievanceId
+    ) {
+
+        const statusSelect =
+            document.getElementById(
+                `status-${grievanceId}`
+            );
+
+
+        const status =
+            statusSelect.value;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://127.0.0.1:5000/admin/update-status",
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            grievance_id:
+                                grievanceId,
+
+                            status:
+                                status
+
+                        })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (response.ok) {
+
+                alert(
+                    "Status updated successfully!"
+                );
+
+                loadGrievances();
+
+            } else {
+
+                alert(
+                    data.message ||
+                    "Failed to update status."
+                );
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Error updating status:",
+                error
+            );
+
+            alert(
+                "Server error."
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    function logout() {
+
+        localStorage.removeItem(
+            "admin"
+        );
+
+        window.location.href =
+            "/admin/admin-login.html";
+
+    }
+
+
+    /* =====================================================
+       START
+    ===================================================== */
+
+    loadGrievances();
+
+</script>
+
+
+</body>
+
+</html>

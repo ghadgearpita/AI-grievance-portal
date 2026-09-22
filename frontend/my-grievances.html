@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Grievances</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .page {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        .grievance {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .grievance h3 {
+            margin-top: 0;
+        }
+
+        .grievance p {
+            margin: 8px 0;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .empty {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="page">
+
+        <a class="back" href="student-dashboard.html">
+            ← Back to Dashboard
+        </a>
+
+        <h1>My Grievances</h1>
+
+        <div id="grievancesContainer">
+
+            <p>Loading grievances...</p>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const userData = localStorage.getItem("user");
+
+        if (!userData) {
+
+            window.location.href = "login.html";
+
+        } else {
+
+            const user = JSON.parse(userData);
+
+            loadGrievances(user.id);
+
+        }
+
+
+        async function loadGrievances(studentId) {
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:5000/my-grievances/" + studentId
+                );
+
+                const grievances = await response.json();
+
+                const container =
+                    document.getElementById("grievancesContainer");
+
+                container.innerHTML = "";
+
+
+                if (grievances.length === 0) {
+
+                    container.innerHTML = `
+                        <div class="empty">
+                            You have not submitted any grievances yet.
+                        </div>
+                    `;
+
+                    return;
+                }
+
+
+                grievances.forEach(function(grievance) {
+
+                    const grievanceBox = document.createElement("div");
+
+                    grievanceBox.className = "grievance";
+
+                    grievanceBox.innerHTML = `
+
+                        <h3>${grievance.grievance_id}</h3>
+
+                        <p>
+                            <strong>Title:</strong>
+                            ${grievance.title}
+                        </p>
+
+                        <p>
+                            <strong>Category:</strong>
+                            ${grievance.category}
+                        </p>
+
+                        <p>
+                            <strong>Description:</strong>
+                            ${grievance.description}
+                        </p>
+
+                        <p class="status">
+                            Status: ${grievance.status}
+                        </p>
+
+                    `;
+
+                    container.appendChild(grievanceBox);
+
+                });
+
+            } catch (error) {
+
+                document.getElementById("grievancesContainer").innerHTML = `
+                    <div class="empty">
+                        Unable to load grievances.
+                    </div>
+                `;
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

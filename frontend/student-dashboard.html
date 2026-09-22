@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Dashboard</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 220px;
+            background: #1e293b;
+            color: white;
+            padding: 25px 20px;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover {
+            background: #334155;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #64748b;
+        }
+
+        /* CARDS */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .card button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        .card button:hover {
+            background: #1d4ed8;
+        }
+
+        /* MOBILE */
+
+        
+@media (max-width: 800px) {
+
+    .dashboard {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: auto;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <h2>Student Portal</h2>
+
+            <a href="student-dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="submit-grievance.html">
+                Submit Grievance
+            </a>
+
+            <a href="my-grievances.html">
+                My Grievances
+            </a>
+
+            <a href="#">
+                Track Status
+            </a>
+
+            <a href="#" id="logout">
+                Logout
+            </a>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+
+        <main class="main-content">
+
+            <div class="welcome">
+
+                <h1 id="welcomeMessage">
+                    Welcome
+                </h1>
+
+                
+
+            </div>
+
+
+            <!-- DASHBOARD CARDS -->
+
+            <div class="cards">
+
+                <div class="card">
+
+                    <h3>Submit Grievance</h3>
+
+                    <p>
+                        Report your issue and submit a new grievance.
+                    </p>
+
+                    <button onclick="location.href='submit-grievance.html'">
+                        Submit
+                    </button>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h3>My Grievances</h3>
+
+                    <p>
+                        View the grievances you have submitted.
+                    </p>
+
+                    <button onclick="location.href='my-grievances.html'">
+                        View
+                    </button>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h3>Track Status</h3>
+
+                    <p>
+                        Check the current status of your grievance.
+                    </p>
+
+                    <button onclick="location.href='track-status.html'">
+                        Track
+                    </button>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script>
+
+        const userData = localStorage.getItem("user");
+
+        if (!userData) {
+
+            window.location.href = "login.html";
+
+        } else {
+
+            const user = JSON.parse(userData);
+
+            document.getElementById("welcomeMessage").textContent =
+                "Welcome, " + user.name;
+
+        }
+
+
+        document.getElementById("logout").addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+            localStorage.removeItem("user");
+
+            window.location.href = "login.html";
+
+        });
+
+    </script>
+
+</body>
+
+</html>
