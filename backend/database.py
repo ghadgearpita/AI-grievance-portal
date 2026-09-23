@@ -2,9 +2,13 @@ import sqlite3
 import os
 
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+DATABASE_DIR = os.path.join(BASE_DIR, "database")
+
+os.makedirs(DATABASE_DIR, exist_ok=True)
+
 DATABASE_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(__file__)),
-    "database",
+    DATABASE_DIR,
     "grievance.db"
 )
 
