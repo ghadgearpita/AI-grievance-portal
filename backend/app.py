@@ -417,7 +417,7 @@ def admin_grievances():
 
         FROM grievances
 
-        JOIN users
+        LEFT JOIN users
 
         ON grievances.student_id = users.id
 
