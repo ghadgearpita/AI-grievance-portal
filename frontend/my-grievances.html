@@ -103,7 +103,7 @@
             try {
 
                 const response = await fetch(
-                    "http://127.0.0.1:5000/my-grievances/" + studentId
+                    "/my-grievances/" + studentId
                 );
 
                 const grievances = await response.json();
