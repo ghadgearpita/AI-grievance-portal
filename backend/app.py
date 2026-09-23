@@ -235,7 +235,7 @@ def submit_grievance():
                 category,
                 priority
             )
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?,?)
             """,
             (
                 grievance_id,
@@ -408,6 +408,8 @@ def admin_grievances():
             grievances.description,
 
             grievances.category,
+
+            grievances.priority,
 
             grievances.department,
 
