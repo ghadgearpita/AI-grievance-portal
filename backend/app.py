@@ -300,6 +300,8 @@ def my_grievances(student_id):
 
             category,
 
+            priority,
+
             status
 
         FROM grievances
@@ -343,6 +345,8 @@ def track_status(
             title,
 
             category,
+
+            priority,
 
             status
 
