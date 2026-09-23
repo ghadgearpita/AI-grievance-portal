@@ -194,7 +194,7 @@
         const category = document.getElementById("category").value;
         const description = document.getElementById("description").value;
 
-        const response = await fetch("http://127.0.0.1:5000/submit-grievance", {
+        const response = await fetch("/submit-grievance", {
 
             method: "POST",
 
