@@ -141,7 +141,7 @@
             const user = JSON.parse(userData);
 
             const response = await fetch(
-                "http://127.0.0.1:5000/track-status/" +
+                "https://ai-grievance-portal-6ox2.onrender.com/track-status/" +
                 grievanceId +
                 "/" +
                 user.id
@@ -169,6 +169,11 @@
                         <p>
                             <strong>Category:</strong>
                             ${data.category}
+                        </p>
+
+                        <p>
+                            <strong>priority:</strong>
+                            ${data.priority}
                         </p>
 
                         <p class="status">
